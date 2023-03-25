@@ -65,6 +65,9 @@ class FileStorage:
             pass
 
     def delete(self, obj=None):
+        """
+        Delete object from storage
+        """
         if obj and obj is not None and isinstance(obj, BaseModel):
             key_id = f"{obj.__class__.__name__}.{obj.id}"
             FileStorage.__objects.pop(key_id, None)

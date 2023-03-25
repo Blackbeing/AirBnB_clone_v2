@@ -59,6 +59,9 @@ class BaseModel:
         return dictionary
 
     def delete(self):
+        """
+        Delete object from storage
+        """
         from models import storage
 
         key_id = f"{self.__class__.__name__}.{self.id}"
