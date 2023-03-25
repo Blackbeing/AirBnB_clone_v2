@@ -17,20 +17,24 @@ class BaseModel:
     updated_at = Column(DateTime(timezone=True), default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
-        default_id = str(uuid.uuid4())
-        self.id = default_id
-        self.created_at = datetime.utcnow()
-        self.updated_at = datetime.utcnow()
-
-        kwargs.pop("__class__", None)
-        for key, attr in kwargs.items():
-            if key in ["created_at", "updated_at"]:
-                attr = datetime.fromisoformat(attr)
-            setattr(self, key, attr)
+        if not kwargs:
+            default_id = str(uuid.uuid4())
+            self.id = default_id
+            self.created_at = datetime.utcnow()
+            self.updated_at = datetime.utcnow()
+        else:
+            kwargs.pop("__class__", None)
+            kwargs["created_at"] = datetime.fromisoformat(
+                kwargs["created_at"]
+            )
+            kwargs["updated_at"] = datetime.fromisoformat(
+                kwargs["updated_at"]
+            )
+            self.__dict__.update(kwargs)
 
     def __str__(self):
         """Returns a string representation of the instance"""
-        self.__dict__.pop("_sa_instance_state", None)
+        # self.__dict__.pop("_sa_instance_state", None)
         cls = (str(type(self)).split(".")[-1]).split("'")[0]
         return "[{}] ({}) {}".format(cls, self.id, self.__dict__)
 
@@ -49,7 +53,6 @@ class BaseModel:
         dictionary.update(
             {"__class__": (str(type(self)).split(".")[-1]).split("'")[0]}
         )
-        print(self.created_at)
         dictionary["created_at"] = self.created_at.isoformat()
         dictionary["updated_at"] = self.updated_at.isoformat()
         dictionary.pop("_sa_instance_state", None)
