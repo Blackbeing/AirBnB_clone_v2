@@ -15,4 +15,12 @@ class City(BaseModel, Base):
     state = relationship(
         "State", back_populates="cities", cascade="all, delete"
     )
-    places = relationship('Place', back_populates='cities', cascade='all, delete')
+    places = relationship(
+        "Place", back_populates="cities", cascade="all, delete"
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        default_dict = {}.fromkeys(["name", "state_id"], "")
+        default_dict.update(kwargs)
+        self.__dict__.update(default_dict)

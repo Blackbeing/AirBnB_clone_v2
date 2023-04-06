@@ -5,6 +5,8 @@ from datetime import datetime
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column, DateTime, String
 from datetime import datetime
+from copy import copy
+from models import type_storage
 
 Base = declarative_base()
 
@@ -18,23 +20,24 @@ class BaseModel:
 
     def __init__(self, *args, **kwargs):
         if not kwargs:
-            default_id = str(uuid.uuid4())
-            self.id = default_id
-            self.created_at = datetime.utcnow()
-            self.updated_at = datetime.utcnow()
+            kwargs = {
+                "id": str(uuid.uuid4()),
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow(),
+            }
         else:
             kwargs.pop("__class__", None)
+            kwargs['id'] = kwargs.get('id', str(uuid.uuid4()))
             kwargs["created_at"] = datetime.fromisoformat(
-                kwargs["created_at"]
+                kwargs.get("created_at", datetime.utcnow().isoformat())
             )
             kwargs["updated_at"] = datetime.fromisoformat(
-                kwargs["updated_at"]
+                kwargs.get("updated_at", datetime.utcnow().isoformat())
             )
-            self.__dict__.update(kwargs)
+        self.__dict__.update(kwargs)
 
     def __str__(self):
         """Returns a string representation of the instance"""
-        # self.__dict__.pop("_sa_instance_state", None)
         cls = (str(type(self)).split(".")[-1]).split("'")[0]
         return "[{}] ({}) {}".format(cls, self.id, self.__dict__)
 

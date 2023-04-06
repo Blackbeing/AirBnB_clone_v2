@@ -12,3 +12,9 @@ class State(BaseModel, Base):
     __tablename__ = "states"
     name = Column(String(128), nullable=False)
     cities = relationship("City")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        default_dict = {}.fromkeys(['name'], "")
+        default_dict.update(kwargs)
+        self.__dict__.update(default_dict)
