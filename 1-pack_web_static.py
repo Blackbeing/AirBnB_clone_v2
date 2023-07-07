@@ -17,7 +17,7 @@ def do_pack():
     # Make version directory
     local("mkdir -p versions")
     result = local(
-        "tar -cvzf versions/{} {}".format(archive_name, "web_static"),
+        "tar -cvzf versions/{} -C web_static .".format(archive_name),
     )
     if result.failed:
         return None
