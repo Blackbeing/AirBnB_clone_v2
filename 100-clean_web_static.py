@@ -17,11 +17,12 @@ def do_clean(number=0):
     """
     number = number if number > 1 else 1
     number += 1
-    local("ls -t *.py | tail -n +{}".format(number))
-    run(
-        "ls -dt /data/web_static/releases/web_static* | \
-                tail -n +{} | \
-                xargs -r rm -r --".format(
-            number
+    local(
+        "ls -t versions/*.tgz | tail -n +{} | xargs -r rm --".format(number)
+    )
+    releases_dirs = "/data/web_static/releases/*/"
+    sudo(
+        "ls -dt {} | tail -n +{} | xargs -r rm -r --".format(
+            releases_dirs, number
         )
     )
