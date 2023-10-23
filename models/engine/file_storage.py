@@ -60,7 +60,7 @@ class FileStorage:
             with open(FileStorage.__file_path, "r") as f:
                 temp = json.load(f)
                 for key, val in temp.items():
-                    self.all()[key] = classes[val["__class__"]](**val)
+                    self.__storage[key] = classes[val["__class__"]](**val)
         except FileNotFoundError:
             pass
 
@@ -71,3 +71,7 @@ class FileStorage:
         if obj and obj is not None and isinstance(obj, BaseModel):
             key_id = f"{obj.__class__.__name__}.{obj.id}"
             FileStorage.__objects.pop(key_id, None)
+
+    def close(self):
+        """Close connection"""
+        self.reload()

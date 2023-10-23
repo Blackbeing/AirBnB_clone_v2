@@ -77,7 +77,7 @@ class DBStorage:
             klass = (
                 classes.get(cls, None)
                 if isinstance(cls, str)
-                else classes.get(cls.__class__.__name__, None)
+                else classes.get(str(cls.__name__), None)
             )
             if klass is None:
                 return self.__objects
@@ -132,3 +132,7 @@ class DBStorage:
         """
         if obj is not None:
             self.__session().delete(obj)
+
+    def close(self):
+        """Close current session"""
+        self.__session().close()
