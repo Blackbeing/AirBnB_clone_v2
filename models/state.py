@@ -5,6 +5,7 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from models import storage, type_storage
+from models.city import City
 
 
 class State(BaseModel, Base):
@@ -18,7 +19,8 @@ class State(BaseModel, Base):
 
         @property
         def cities(self):
-            return [city for city in storage.all().items()]
+            return [city for city in storage.all(cls=City).values()
+                    if city.state_id == self.id]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
